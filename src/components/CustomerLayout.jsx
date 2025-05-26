@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link, Outlet } from 'react-router-dom';
+import LogoutButton from '../components/LogoutButton';
 
 export default function CustomerLayout() {
   return (
@@ -28,6 +29,9 @@ export default function CustomerLayout() {
             </li>
           </ul>
         </nav>
+             <div className="relative h-full">
+  <LogoutButton />
+</div>
         <div className="p-4 text-sm text-gray-400 border-t border-gray-700">© 2025 StephensCode</div>
       </aside>
 
