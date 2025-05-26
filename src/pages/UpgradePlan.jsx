@@ -58,7 +58,7 @@ export default function UpgradePlan() {
   const handleUpgrade = async (item) => {
     try {
       const uid = auth.currentUser.uid;
-      const response = await fetch('https://api.stephenscode.dev/api/create-checkout-session', {
+      const response = await fetch("https://api.stephenscode.dev/create-checkout-session", {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
