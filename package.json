@@ -19,6 +19,7 @@
     "@stripe/stripe-js": "^7.3.0",
     "@tailwindcss/postcss": "^4.1.7",
     "firebase": "^11.8.1",
+    "framer-motion": "^12.14.0",
     "posthog-js": "^1.246.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
