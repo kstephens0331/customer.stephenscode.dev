@@ -4,7 +4,7 @@ import { auth } from '../firebase';
 
 export default function UpgradePlan() {
   const categories = {
-     'Core Packages': [
+    'Core Packages': [
       {
         title: 'Plug and Play',
         price: '$250 flat-rate',
@@ -86,29 +86,58 @@ export default function UpgradePlan() {
     ],
   };
 
+  // Minimal, safe price display
+  const money = (p) =>
+    typeof p === 'number'
+      ? new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(p)
+      : String(p ?? '—');
+
+  // Tiny helper to extract a dollar amount from strings like "$250 flat-rate" or "$50–$75/mo"
+  const parsePrice = (p) => {
+    if (typeof p === 'number') return p;
+    if (typeof p === 'string') {
+      const cleaned = p.replace(/,/g, '');
+      const match = cleaned.match(/(\d+(\.\d+)?)/);
+      return match ? Number(match[1]) : null;
+    }
+    return null;
+  };
+
   const handleUpgrade = async (item) => {
     try {
-      const uid = auth.currentUser.uid;
-      const response = await fetch("https://api.stephenscode.dev/create-checkout-session", {
+      const uid = auth.currentUser?.uid;
+      if (!uid) throw new Error('Not signed in');
+
+      // Try to get a numeric amount for Checkout (fallback to null if not present)
+      const amount = parsePrice(item.price);
+      const payload = {
+        items: [
+          {
+            // If your API expects Stripe price IDs, swap to `priceId` instead
+            title: item.title,
+            description: item.desc || item.features?.join(', '),
+            amount,               // e.g., 250, 1100, etc. (server can convert to cents)
+            currency: 'usd',
+            quantity: 1,
+          },
+        ],
+        email: auth.currentUser.email,
+      };
+
+      const response = await fetch('https://api.stephenscode.dev/create-checkout-session', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          items: [
-            {
-              price: item.price,
-              title: item.title,
-              description: item.desc || item.features?.join(', '),
-              quantity: 1
-            }
-          ],
-          email: auth.currentUser.email // Use the logged-in customer’s email
-        }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
       });
 
+      if (!response.ok) {
+        const text = await response.text();
+        throw new Error(text || 'Checkout failed');
+      }
+
       const { url } = await response.json();
-      window.location.href = url; // Redirect to Stripe Checkout
+      if (!url) throw new Error('No checkout URL returned');
+      window.location.href = url;
     } catch (error) {
       console.error(error);
       alert('Something went wrong. Please try again.');
@@ -131,13 +160,21 @@ export default function UpgradePlan() {
                 transition={{ delay: 0.05 * idx, duration: 0.5 }}
               >
                 <h3 className="text-lg font-bold text-gray-800 mb-1">{item.title}</h3>
-                {item.price && <p className="text-gray-600 mb-2">${item.price.toFixed(2)}</p>}
+
+                {/* ✅ FIXED: use item.price (not s.price) and no extra '$' */}
+                {item.price && (
+                  <p className="text-gray-600 mb-2">
+                    {money(item.price)}
+                  </p>
+                )}
+
                 {item.desc && <p className="text-gray-600 text-sm mb-2">{item.desc}</p>}
                 {item.features && (
                   <ul className="text-gray-600 text-sm list-disc list-inside mb-2">
-                    {item.features.map((feat, i) => <li key={i}>{feat}</li>)}
+                    {item.features.map((feat, j) => <li key={j}>{feat}</li>)}
                   </ul>
                 )}
+
                 <button
                   onClick={() => handleUpgrade(item)}
                   className="mt-auto bg-orange-500 text-white py-2 rounded hover:bg-orange-600 transition"
