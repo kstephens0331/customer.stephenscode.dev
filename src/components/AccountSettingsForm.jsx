@@ -82,110 +82,145 @@ export default function AccountSettingsForm() {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="bg-white rounded shadow p-6 text-black max-w-lg mx-auto"
-    >
-      <div className="mb-4">
-        <label className="block mb-1 font-semibold">Full Name</label>
-        <input
-          type="text"
-          name="name"
-          value={form.name}
-          onChange={handleChange}
-          className="w-full border border-gray-300 rounded p-2"
-          placeholder="Your full name"
-        />
+    <div className="relative rounded-3xl bg-gradient-to-br from-slate-800/80 to-slate-700/80 p-8 border border-slate-600/50 backdrop-blur-sm overflow-hidden max-w-3xl mx-auto">
+      <div className="absolute inset-0 opacity-5">
+        <div className="absolute inset-0" style={{
+          backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)',
+          backgroundSize: '32px 32px'
+        }} />
       </div>
 
-      <div className="mb-4">
-        <label className="block mb-1 font-semibold">Email</label>
-        <input
-          type="email"
-          name="email"
-          value={form.email}
-          onChange={handleChange}
-          className="w-full border border-gray-300 rounded p-2"
-          placeholder="you@example.com"
-          disabled
-        />
-      </div>
+      <form onSubmit={handleSubmit} className="relative space-y-6">
+        {/* Profile Information Section */}
+        <div className="mb-8">
+          <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+            <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+              Profile Information
+            </span>
+          </h2>
 
-      <div className="mb-4">
-        <label className="block mb-1 font-semibold">Company Name</label>
-        <input
-          type="text"
-          name="company"
-          value={form.company}
-          onChange={handleChange}
-          className="w-full border border-gray-300 rounded p-2"
-          placeholder="Your company"
-        />
-      </div>
+          <div className="grid md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-sm font-semibold text-slate-300 mb-2">Full Name</label>
+              <input
+                type="text"
+                name="name"
+                value={form.name}
+                onChange={handleChange}
+                className="w-full bg-slate-900/50 border border-slate-600/50 rounded-xl p-3 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 transition-all"
+                placeholder="Your full name"
+              />
+            </div>
 
-      <div className="mb-4">
-        <label className="block mb-1 font-semibold">Phone Number</label>
-        <input
-          type="tel"
-          name="phone"
-          value={form.phone}
-          onChange={handleChange}
-          className="w-full border border-gray-300 rounded p-2"
-          placeholder="(123) 456-7890"
-        />
-      </div>
+            <div>
+              <label className="block text-sm font-semibold text-slate-300 mb-2">Email</label>
+              <input
+                type="email"
+                name="email"
+                value={form.email}
+                onChange={handleChange}
+                className="w-full bg-slate-900/30 border border-slate-600/30 rounded-xl p-3 text-slate-400 placeholder-slate-500 cursor-not-allowed"
+                placeholder="you@example.com"
+                disabled
+              />
+              <p className="text-slate-500 text-xs mt-1">Email cannot be changed</p>
+            </div>
 
-      <div className="mb-4">
-        <label className="block mb-1 font-semibold">Address</label>
-        <input
-          type="text"
-          name="address"
-          value={form.address}
-          onChange={handleChange}
-          className="w-full border border-gray-300 rounded p-2"
-          placeholder="Your address"
-        />
-      </div>
+            <div>
+              <label className="block text-sm font-semibold text-slate-300 mb-2">Company Name</label>
+              <input
+                type="text"
+                name="company"
+                value={form.company}
+                onChange={handleChange}
+                className="w-full bg-slate-900/50 border border-slate-600/50 rounded-xl p-3 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 transition-all"
+                placeholder="Your company"
+              />
+            </div>
 
-      <div className="mb-4">
-        <label className="block mb-1 font-semibold">Current Password (to change password)</label>
-        <input
-          type="password"
-          value={currentPassword}
-          onChange={(e) => setCurrentPassword(e.target.value)}
-          className="w-full border border-gray-300 rounded p-2"
-          placeholder="Current password"
-        />
-      </div>
+            <div>
+              <label className="block text-sm font-semibold text-slate-300 mb-2">Phone Number</label>
+              <input
+                type="tel"
+                name="phone"
+                value={form.phone}
+                onChange={handleChange}
+                className="w-full bg-slate-900/50 border border-slate-600/50 rounded-xl p-3 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 transition-all"
+                placeholder="(123) 456-7890"
+              />
+            </div>
 
-      <div className="mb-4">
-        <label className="block mb-1 font-semibold">New Password</label>
-        <input
-          type="password"
-          value={newPassword}
-          onChange={(e) => setNewPassword(e.target.value)}
-          className="w-full border border-gray-300 rounded p-2"
-          placeholder="New password"
-        />
-      </div>
+            <div className="md:col-span-2">
+              <label className="block text-sm font-semibold text-slate-300 mb-2">Address</label>
+              <input
+                type="text"
+                name="address"
+                value={form.address}
+                onChange={handleChange}
+                className="w-full bg-slate-900/50 border border-slate-600/50 rounded-xl p-3 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 transition-all"
+                placeholder="Your address"
+              />
+            </div>
+          </div>
+        </div>
 
-      <div className="mb-4">
-        <label className="block mb-1 font-semibold">Confirm New Password</label>
-        <input
-          type="password"
-          value={confirmNewPassword}
-          onChange={(e) => setConfirmNewPassword(e.target.value)}
-          className="w-full border border-gray-300 rounded p-2"
-          placeholder="Confirm new password"
-        />
-      </div>
+        {/* Security Section */}
+        <div className="pt-8 border-t border-slate-600/30">
+          <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+            <span className="bg-gradient-to-r from-pink-400 to-red-400 bg-clip-text text-transparent">
+              Change Password
+            </span>
+          </h2>
 
-      <button
-        type="submit"
-        className="bg-orange-500 text-black px-4 py-2 rounded hover:bg-orange-600 transition w-full"
-      >
-        Update Settings
-      </button>
-    </form>
+          <div className="bg-slate-900/30 border border-slate-600/30 rounded-xl p-4 mb-6">
+            <p className="text-slate-300 text-sm">
+              Leave password fields empty if you don't want to change your password.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-6">
+            <div className="md:col-span-2">
+              <label className="block text-sm font-semibold text-slate-300 mb-2">Current Password</label>
+              <input
+                type="password"
+                value={currentPassword}
+                onChange={(e) => setCurrentPassword(e.target.value)}
+                className="w-full bg-slate-900/50 border border-slate-600/50 rounded-xl p-3 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-pink-500/50 focus:border-pink-500/50 transition-all"
+                placeholder="Enter current password"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-slate-300 mb-2">New Password</label>
+              <input
+                type="password"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                className="w-full bg-slate-900/50 border border-slate-600/50 rounded-xl p-3 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-pink-500/50 focus:border-pink-500/50 transition-all"
+                placeholder="Enter new password"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-slate-300 mb-2">Confirm New Password</label>
+              <input
+                type="password"
+                value={confirmNewPassword}
+                onChange={(e) => setConfirmNewPassword(e.target.value)}
+                className="w-full bg-slate-900/50 border border-slate-600/50 rounded-xl p-3 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-pink-500/50 focus:border-pink-500/50 transition-all"
+                placeholder="Confirm new password"
+              />
+            </div>
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          className="w-full bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 text-white font-bold py-4 px-6 rounded-xl hover:from-purple-600 hover:via-pink-600 hover:to-red-600 transition-all duration-300 shadow-lg shadow-purple-500/25 mt-8"
+        >
+          Save Changes
+        </button>
+      </form>
+    </div>
   );
 }

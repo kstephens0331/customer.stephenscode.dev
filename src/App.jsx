@@ -13,6 +13,7 @@ import RequestModule from './pages/RequestModule';
 import UpdateRequest from './pages/UpdateRequest';
 import UpgradePlan from './pages/UpgradePlan';
 import Analytics from './pages/Analytics';
+import ReviewModule from './pages/ReviewModule';
 
 export default function App() {
   return (
@@ -32,6 +33,7 @@ export default function App() {
             <Route path="/settings" element={<AccountSettings />} />
             <Route path="/upgrade-plan" element={<UpgradePlan />} />
             <Route path="/analytics" element={<Analytics />} />
+            <Route path="/review" element={<ReviewModule />} />
           </Route>
         </Routes>
       </Router>
