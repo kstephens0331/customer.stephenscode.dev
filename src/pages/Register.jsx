@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { doc, setDoc, Timestamp } from 'firebase/firestore';
-import { auth, db } from '../firebase';
+import { doc, setDoc, Timestamp, collection, query, where, getDocs, updateDoc } from 'firebase/firestore';
+import { auth, db, ordersDb } from '../firebase';
 import { FaUser, FaEnvelope, FaLock, FaPhone, FaMapMarkerAlt, FaCode } from 'react-icons/fa';
 
 export default function Register() {
@@ -21,12 +21,49 @@ export default function Register() {
     });
   };
 
+  const linkExistingOrders = async (userId, email, fullName) => {
+    try {
+      // Find all orders with matching email that aren't already linked
+      const q = query(
+        collection(ordersDb, 'orders'),
+        where('email', '==', email.toLowerCase())
+      );
+
+      const snapshot = await getDocs(q);
+      let linkedCount = 0;
+
+      // Update each matching order with customer info
+      const updatePromises = snapshot.docs.map(async (orderDoc) => {
+        const orderData = orderDoc.data();
+
+        // Only update if not already linked or linked to a different customer
+        if (!orderData.customerId || orderData.customerId !== userId) {
+          await updateDoc(doc(ordersDb, 'orders', orderDoc.id), {
+            customerId: userId,
+            customerName: fullName,
+            linkedAccount: true,
+            linkedAt: Timestamp.now()
+          });
+          linkedCount++;
+        }
+      });
+
+      await Promise.all(updatePromises);
+      console.log(`Linked ${linkedCount} existing orders to customer account`);
+      return linkedCount;
+    } catch (error) {
+      console.error('Error linking existing orders:', error);
+      return 0;
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, form.email, form.password);
       const userId = userCredential.user.uid;
 
+      // Create customer document
       await setDoc(doc(db, 'customers', userId), {
         fullName: form.fullName,
         email: form.email,
@@ -38,6 +75,13 @@ export default function Register() {
         googleAnalyticsId: '',
         updatedAt: Timestamp.now()
       });
+
+      // Link any existing orders with matching email
+      const linkedCount = await linkExistingOrders(userId, form.email, form.fullName);
+
+      if (linkedCount > 0) {
+        alert(`Account created successfully! We found and linked ${linkedCount} existing order${linkedCount > 1 ? 's' : ''} to your account.`);
+      }
 
       window.location.href = '/';
     } catch (error) {
