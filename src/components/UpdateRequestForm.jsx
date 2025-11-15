@@ -33,11 +33,19 @@ export default function UpdateRequestForm() {
         fileName = file.name;
       }
 
+      // Get customer name from Firestore
+      const customerDoc = await import('firebase/firestore').then(({ doc, getDoc }) =>
+        getDoc(doc(db, 'customers', userId))
+      );
+      const customerName = customerDoc.data()?.fullName || 'Unknown';
+
       // Create document in Firestore
       await addDoc(collection(db, 'updateRequests'), {
         customerId: userId,
+        customerName: customerName,
         customerEmail: auth.currentUser.email,
-        note: note,
+        description: note,
+        note: note, // Keep for backward compatibility
         fileUrl: fileUrl,
         fileName: fileName,
         status: 'pending',
